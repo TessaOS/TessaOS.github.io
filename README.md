@@ -1,103 +1,124 @@
-
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TessaOS Alpha v1.5.3 - Login</title>
-  <style>
-    body {
-      font-family: monospace;
-      background-color: #000;
-      color: #0f0;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TessaOS Alpha v1.5.3</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00FF00;
+            font-family: "Courier New", Courier, monospace;
+            margin: 0;
+            padding: 0;
+        }
 
-    .login-container {
-      width: 100%;
-      max-width: 600px;
-      margin: 100px auto;
-      padding: 20px;
-      border: 1px solid #0f0;
-      background-color: #111;
-    }
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
 
-    h1 {
-      text-align: center;
-    }
+        input {
+            background-color: black;
+            color: #00FF00;
+            border: 1px solid #00FF00;
+            padding: 5px;
+        }
 
-    .login-input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #0f0;
-      background-color: #333;
-      color: #0f0;
-      font-size: 16px;
-    }
+        #output {
+            margin-top: 20px;
+            text-align: left;
+            white-space: pre;
+        }
 
-    .login-btn {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #0f0;
-      background-color: #444;
-      color: #0f0;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .error {
-      color: red;
-    }
-  </style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1>TessaOS Alpha v1.5.3</h1>
+        <p>Enter username and password:</p>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="checkLogin()">Login</button>
+        <div id="output"></div>
+    </div>
 
-  <div class="login-container">
-    <h1>TessaOS Alpha v1.5.3</h1>
-    <label for="username">Username:</label>
-    <input type="text" id="username" class="login-input" placeholder="Enter Username">
-    <label for="password">Password:</label>
-    <input type="password" id="password" class="login-input" placeholder="Enter Password">
-    <button class="login-btn" onclick="login()">Login</button>
-    <div id="error-message" class="error hidden"></div>
-  </div>
+    <script>
+        const users = {
+            "Martin Greyfield": {
+                username: "MartinGrey",
+                password: "Greyfield123",
+                accessLevel: "Admin"
+            },
+            "Roxanne C. Greyfield": {
+                username: "RoxanneC",
+                password: "Roxanne456",
+                accessLevel: "Admin"
+            },
+            "Viktor K. Clarkes": {
+                username: "ViktorK",
+                password: "Viktor789",
+                accessLevel: "Developer/Admin"
+            },
+            "Sarah R. Terathes": {
+                username: "SarahR",
+                password: "Sarah101",
+                accessLevel: "Developer/Admin"
+            },
+            "Sterling P. Mitchell": {
+                username: "SterlingP",
+                password: "Sterling500",
+                accessLevel: "Security"
+            },
+            "Marcus": {
+                username: "Marcus",
+                password: "Nevermore",
+                accessLevel: "Special Access"
+            }
+        };
 
-  <script>
-    const users = {
-      "Martin Greyfield": { username: "martin", password: "greyfield", access: "Admin" },
-      "Roxanne C. Greyfield": { username: "roxanne", password: "greyr0ck", access: "Admin" },
-      "Viktor K. Clarkes": { username: "viktor", password: "clark3s", access: "Developer/Admin" },
-      "Sarah R. Terathes": { username: "sarah", password: "terathes1", access: "Developer/Admin" },
-      "Sterling P. Mitchell": { username: "sterling", password: "mitchellP", access: "Security" },
-      "Marcus Whitlock": { username: "marcus", password: "nevermore", access: "Special" }
-    };
+        function checkLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const output = document.getElementById('output');
+            
+            // Check if the user is Marcus with special access
+            if (username === "Marcus" && password === "Nevermore") {
+                window.location.href = "https://www.youtube.com/channel/UCXXXXXX"; // Link to Cerberus Science YouTube channel
+                return;
+            }
 
-    function login() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const errorMessage = document.getElementById('error-message');
+            let userFound = false;
+            for (const user in users) {
+                if (users[user].username === username && users[user].password === password) {
+                    userFound = true;
+                    output.innerHTML = `Welcome, ${user}!<br>Access Level: ${users[user].accessLevel}`;
+                    redirectToUserPage(user);
+                    break;
+                }
+            }
 
-      if (username === "marcus" && password === "nevermore") {
-        window.location.href = "https://www.youtube.com/channel/CerberusScience"; // Redirect to the YouTube channel
-      } else {
-        const user = Object.values(users).find(user => user.username === username && user.password === password);
-
-        if (user) {
-          errorMessage.classList.add('hidden');
-          alert(`Welcome ${Object.keys(users).find(key => users[key] === user)}`);
-          window.location.href = `${username.toLowerCase()}_account.html`; // Redirect to user-specific webpage
-        } else {
-          errorMessage.classList.remove('hidden');
-          errorMessage.textContent = "Invalid Username or Password";
+            if (!userFound) {
+                output.innerHTML = "Incorrect username or password.";
+            }
         }
-      }
-    }
-  </script>
 
+        function redirectToUserPage(user) {
+            const userPages = {
+                "Martin Greyfield": "/MartinGreyfield.html",
+                "Roxanne C. Greyfield": "/RoxanneGreyfield.html",
+                "Viktor K. Clarkes": "/ViktorClarkes.html",
+                "Sarah R. Terathes": "/SarahTerathes.html",
+                "Sterling P. Mitchell": "/SterlingMitchell.html"
+            };
+
+            if (userPages[user]) {
+                window.location.href = userPages[user];
+            }
+        }
+    </script>
 </body>
 </html>
+
